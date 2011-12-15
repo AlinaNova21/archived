@@ -1,0 +1,7 @@
+name: SpoutFly
+version: 0.1
+description: A Flying addon for SpoutCraft
+authors: [ags131]
+website: 
+main: me.ags131.spoutfly.SpoutFly
+mode: BOTH
