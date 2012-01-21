@@ -1,0 +1,287 @@
+﻿BEGIN
+00
+KeepAlive
+w int ID
+r int ID
+END
+BEGIN
+01
+Login
+w int protocol
+w String username
+w long 0
+w int 0
+w byte 0
+w byte 0
+w byte 0
+w byte 0
+r int entityID
+r String 0
+r long mapSeed
+r int serverMode
+r byte dimension
+r byte difficulty
+r byte worldHeight
+r byte maxPlayers
+END
+BEGIN
+02
+Handshake
+w String username
+r String hash
+END
+BEGIN
+03
+Chat
+r String message
+w String message
+END
+BEGIN
+04
+TimeUpdate
+r long time
+END
+BEGIN
+05
+EntityEquipment
+r int entityID
+r short slot
+r short itemID
+r short damage
+END
+BEGIN
+06
+SpawnPosition
+r int x
+r int y
+r int z
+END
+BEGIN
+07
+UseEntity
+w int user
+w int target
+w boolean leftClick
+END
+BEGIN
+08
+UpdateHealth
+r short health
+r short food
+r float foodSaturation
+END
+BEGIN
+09
+Respawn
+r byte dimension
+r byte difficulty
+r byte creative
+r short worldHeight
+r long mapSeed
+w byte dimension
+w byte difficulty
+w byte creative
+w short worldHeight
+w long mapSeed
+END
+BEGIN
+0A
+Player
+w boolean onGround
+END
+BEGIN
+0B
+PlayerPosition
+w double x
+w double y
+w double stance
+w double z
+w boolean onGround
+END
+BEGIN
+0C
+PlayerLook
+w float yaw
+w float pitch
+w boolean onGround
+END
+BEGIN
+0D
+PlayerPositionAndLook
+w double x
+w double y
+w double stance
+w double z
+w float yaw
+w float pitch
+w boolean onGround
+r double x
+r double stance
+r double y
+r double z
+r float yaw
+r float pitch
+r boolean onGround
+END
+BEGIN
+0E
+PlayerDigging
+w byte status
+w int x
+w byte y
+w int z
+w byte face
+END
+BEGIN
+0F
+PlayerBlockPlacement
+w int x
+w byte y
+w int z
+w byte direction
+w slot heldItem
+END
+BEGIN
+10
+HoldingChange
+r short slot
+END
+BEGIN
+11
+UseBed
+r int entityID
+r byte inBed
+r int x
+r byte y
+r byte z
+END
+BEGIN
+12
+r int entityID
+r byte animation
+w int entityID
+w byte animation
+END
+BEGIN
+13
+EntityAction
+w int entityID
+w byte actionID
+END
+BEGIN
+14
+NamedEntitySpawn
+r int entityID
+r String playerName
+r int x
+r int y
+r int z
+r byte rotation
+r byte pitch
+r short currentItem
+END
+BEGIN
+15
+PickupSpawn
+r int entityID
+r short item
+r byte count
+r short damage
+r int x
+r int y
+r int z
+r byte pitch
+r byte yaw
+r byte roll
+w int entityID
+w short item
+w byte count
+w short damage
+w int x
+w int y
+w int z
+w byte pitch
+w byte yaw
+w byte roll
+END
+BEGIN
+16
+r int collectedEntityID
+r int collectorEntityID
+END
+BEGIN
+17
+AddObjectOrVehicle
+r int entityID
+r byte type
+r int x
+r int y
+r int z
+r CONDITIONAL FIX
+r int fbThrowersEID
+r short xSpeed
+r short ySpeed
+r short zSpeed
+END
+BEGIN
+18
+MobSpawn
+r int entityID
+r byte type
+r int x
+r int y
+r int z
+r byte yaw
+r byte pitch
+r metadata metadata
+END
+BEGIN
+19
+Painting
+r int entityID
+r String title
+r int x
+r int y
+r int z
+r int direction
+END
+BEGIN
+1A
+ExpOrb
+r int entityID
+r int x
+r int y
+r int z
+r short count
+END
+BEGIN
+1C
+EntityVelocity
+r int entityID
+r short x
+r short y
+r short z
+END
+BEGIN
+1D
+DestroyEntity
+r int entityID
+END
+BEGIN
+1E
+r int entityID
+END
+BEGIN
+1F
+r int entityID
+r byte dx
+r byte dy
+r byte dz
+END
+BEGIN
+20
+r int entityID
+r byte yaw
+r byte pitch
+END
+EOF
