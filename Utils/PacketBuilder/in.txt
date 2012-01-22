@@ -18,6 +18,7 @@ w byte 0
 r int entityID
 r String 0
 r long mapSeed
+r String levelType
 r int serverMode
 r byte dimension
 r byte difficulty
@@ -78,11 +79,13 @@ r byte difficulty
 r byte creative
 r short worldHeight
 r long mapSeed
+r String level
 w byte dimension
 w byte difficulty
 w byte creative
 w short worldHeight
 w long mapSeed
+w String level
 END
 BEGIN
 0A
@@ -157,6 +160,7 @@ r byte z
 END
 BEGIN
 12
+Animation
 r int entityID
 r byte animation
 w int entityID
@@ -206,6 +210,7 @@ w byte roll
 END
 BEGIN
 16
+CollectItem
 r int collectedEntityID
 r int collectorEntityID
 END
@@ -269,10 +274,12 @@ r int entityID
 END
 BEGIN
 1E
+Entity
 r int entityID
 END
 BEGIN
 1F
+EntityRelativeMove
 r int entityID
 r byte dx
 r byte dy
@@ -280,8 +287,296 @@ r byte dz
 END
 BEGIN
 20
+EntityLook
 r int entityID
 r byte yaw
 r byte pitch
+END
+BEGIN
+21
+EntityLookandRelativeMove
+r int entityID
+r byte dx
+r byte dy
+r byte dz
+r byte yaw
+r byte pitch
+END
+BEGIN
+22
+EntityTeleport
+r int entityID
+r int x
+r int y
+r int z
+r byte yaw
+r byte pitch
+END
+BEGIN
+26
+EntityStatus
+r int entityID
+r byte entityStatus
+END
+BEGIN
+27
+AttachEntity
+r int entityID
+r int vehicleID
+w int entityID
+w int vehicleID
+END
+BEGIN
+28
+EntityMetadata
+r int entityID
+r Metadata entityMetadata
+w int entityID
+w Metadata entityMetadata
+END
+BEGIN
+29
+EntityEffect
+r int entityID
+r byte effectID
+r byte amplifier
+r short duration
+w int entityID
+w byte effectID
+w byte amplifier
+w short duration
+END
+BEGIN
+2A
+RemoveEntityEffect
+r int entityID
+r byte effectID
+w int entityID
+w byte effectID
+END
+BEGIN
+2B
+Experience
+r float expBar
+r short level
+r short totalExp
+w float expBar
+w short level
+w short totalExp
+END
+BEGIN
+32
+PreChunk
+r int x
+r int z
+r bool mode
+END
+BEGIN
+33
+MapChunk
+r int x
+r short y
+r int z
+r byte sizeX
+r byte sizeY
+r byte sizeZ
+r int size
+r byte[] data
+END
+BEGIN
+34
+MultiBlockChange
+r int x
+r int z
+r short size
+r short[] coord
+r byte[] types
+r byte[] metadata
+END
+BEGIN
+35
+BlockChange
+r int x
+r byte y
+r int z
+r byte blockType
+r byte blockMetadata
+END
+BEGIN
+36
+BlockAction
+r int x
+r short y
+r int z
+r byte byte1
+r byte byte2
+END
+BEGIN
+3C
+Explosion
+r double x
+r double y
+r double z
+r float unknown
+r int count
+r byte[3][] records
+END
+BEGIN
+3D
+SoundOrParticleEffect
+r int effectID
+r int x
+r byte y
+r int z
+r int data
+END
+BEGIN
+46
+NewOrInvalidState
+r byte reason
+r byte gamemode
+END
+BEGIN
+47
+Thunderbolt
+r int entityID
+r bool unknown
+r int x
+r int y
+r int z
+END
+BEGIN
+64
+OpenWindow
+r byte windowID
+r byte inventoryType
+r String windowTitle
+r byte slots
+END
+BEGIN
+65
+CloseWindow
+r byte windowID
+w byte windowID
+END
+BEGIN
+66
+WindowClick
+r byte windowID
+r short slot
+r byte rightClick
+r short actionNum
+r bool shift
+r slot clickedItem
+w byte windowID
+w short slot
+w byte rightClick
+w short actionNum
+w bool shift
+w slot clickedItem
+END
+BEGIN
+67
+SetSlot
+r byte windowID
+r short slot
+r slot data
+END
+BEGIN
+68
+WindowItems
+r byte windowID
+r short count
+r slot[] data
+END
+BEGIN
+69
+UpdateWindowProperty
+r byte windowID
+r short property
+r short value
+END
+BEGIN
+6A
+Transaction
+r byte windowID
+r short actionNum
+r bool accepted
+w byte windowID
+w short actionNum
+w bool accepted
+END
+BEGIN
+6B
+CreateInventoryAction
+r short slot
+r slot item
+END
+BEGIN
+6C
+EnchantItem
+w byte windowID
+w byte enchantment
+END
+BEGIN
+82
+UpdateSign
+r int x
+r short y
+r int z
+r String text1
+r String text2
+r String text3
+r String text4
+w int x
+w short y
+w int z
+w String text1
+w String text2
+w String text3
+w String text4
+END
+BEGIN
+83
+ItemData
+r short itemType
+r short itemID
+r ubyte len
+r byte[] text
+END
+BEGIN
+C8
+IncrementStatistic
+r int statID
+r byte amount
+w int statID
+w byte amount
+END
+BEGIN
+C9
+PlayerListItem
+r String name
+r bool online
+r short ping
+END
+BEGIN
+FA
+PluginMessage
+r String channel
+r short length
+r byte[] data
+w String channel
+w short length
+w byte[] data
+END
+BEGIN
+FE
+ServerListPing
+END
+BEGIN
+FF
+Kick
+r String reason
+w String reason
 END
 EOF
