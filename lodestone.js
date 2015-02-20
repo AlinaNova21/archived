@@ -29,6 +29,7 @@ jobs_png['36ce9c4cc01581d4f900102cd51e09c60c3876a6.png'] = 'Dragoon';
 jobs_png['2de279517a8de132f2faad4986a507ed728a067f.png'] = 'Warrior';
 jobs_png['626a1a0927f7d2510a92558e8032831264110f26.png'] = 'Paladin';
 jobs_png['8873ffdf5f7c80770bc40f5b82ae1be6fa1f8305.png'] = 'Monk';
+jobs_png['1d4a1cf6021705ee62c5b5dfc100781f0f272623.png'] = 'Rogue';
 jobs_png['98d95dec1f321f111439032b64bc42b98c063f1b.png'] = 'Black Mage';
 
 jobs_png['343bce834add76f5d714f33154d0c70e99d495a3.png'] = 'Alchemist';
@@ -46,6 +47,7 @@ jobs_png['8e82259fcd979378632cde0c9767c15dba3790af.png'] = 'Miner';
 
 var wpn_type_names = {"Gladiator's Arm"              : "main_hand",
                       "Pugilist's Arm"               : "main_hand",
+                      "Rogue's Arms"               : "main_hand",
                       "Marauder's Arm"               : "main_hand",
                       "Lancer's Arm"                 : "main_hand",
                       "Archer's Arm"                 : "main_hand",
@@ -119,6 +121,7 @@ function getCannotEquipGearTo(text, itemType) {
 
     var wpn_type_names = {"Gladiator's Arm"              : [],
                           "Pugilist's Arm"               : ['Off Hand'],
+                          "Rogue's Arms"                 : ['Off Hand'],
                           "Marauder's Arm"               : ['Off Hand'],
                           "Lancer's Arm"                 : ['Off Hand'],
                           "Archer's Arm"                 : ['Off Hand'],
@@ -195,7 +198,7 @@ function getCannotEquipGearTo(text, itemType) {
 
         memo.push(add.charAt(0).toUpperCase() + add.slice(1));
         return memo;
-    }, _.clone(wpn_type_names[itemType]));
+    }, _.clone(wpn_type_names[itemType] || []));
 }
 
 function calcIlv(items) {
@@ -288,14 +291,9 @@ var _scrape = function (body, callback) {
 
         item.name = $(this).find('.item_name').text();
         item.ilv  = parseInt($(this).find('.pt3').text().replace('Item Level ', ''), 10);
-        item.type = $(this).find('.name_area.clearfix')
-                        .clone()//clone the element
-                            .children()//select all the children
-                                .remove()//remove all the children
-                                    .end()//again go back to selected element
-                                        .text()
-                                            .trim();
-        item.id   = $(this).find('.bt_db_item_detail').attr('href').replace('/lodestone/playguide/db/item/', '').replace('/', '');
+        item.type = $(this).find('.name_area.clearfix .category_name').text().trim();
+
+        item.id   = $(this).find('.bt_db_item_detail a').attr('href').replace('/lodestone/playguide/db/item/', '').replace('/', '');
 
 
         if (getItemSlot(item.type) === 'ring') {
