@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name Monster Minigame Slave Script
 // @author /u/ags131
-// @version 1.03
+// @version 1.04
 // @namespace https://github.com/ags131/steamMinigameSlaveScript
 // @description A script that spawns slave instances of the Steam Monster Minigame
 // @match *://steamcommunity.com/minigame/towerattack*
@@ -12,10 +12,18 @@
 // ==/UserScript==
 
 var autoStartSlaves = true; // Start slaves when master loads
+
 var slaveCount = 10; // Adjust this according to your computers capabilities, more slaves means more ram and CPU. 
 var cleanupSlave = true; // Hide all UI and disable rendering for slaves. This will help on CPU and possibly RAM usage
+
 var restartSlaves = true; // Periodically restarts slaves in attempts to free memory
-var slaveRestartInterval = 5 * 60 * 1000;  // Period to restart slaves (In milliseconds)
+var slaveRestartInterval = 15 * 60 * 1000;  // Period to restart slaves (In milliseconds)
+
+var restartMaster = false; // Periodically restarts master in attempts to free memory
+var masterRestartInterval = 15 * 60 * 1000;  // Period to restart master (In milliseconds)
+
+if(restartMaster && autoStartSlaves) 
+	restartSlaves = false; // Disable restartSlaves if restartMaster && autoStartSlaves
 
 if(location.search.match(/slave/))
 	runSlave()
@@ -26,19 +34,20 @@ function runMaster()
 {
 	window.unload = function(){ killAllSlaves() }
 	var slaves = window.slaves = [];
-	function spawnSlave(){
-		var num = slaves.length
+	function spawnSlave(num){
+		num = num || slaves.length
 		var slaveheight = screen.height / 10;
 		var params = 'left=0, top='+(num*100)+', width=220, height=100';
 		var slave = window.open("http://steamcommunity.com/minigame/towerattack/?slave",'slave'+num, params)
-		slaves.push(slave);
+		if(num == slaves.length)
+			slaves.push(slave);
 		$J('.slaveCount').text(slaves.length)
 	}
 	
 	function spawnSlaves(){
 		cnt = slaveCount;
 		for(var i=0;i<cnt;i++)
-			spawnSlave()
+			spawnSlave(i)
 	}
 	
 	function killAllSlaves(){
@@ -51,13 +60,10 @@ function runMaster()
 		spawnSlaves()
 	
 	if(restartSlaves)
-	{
-		setInterval(function(){
-			var cnt = slaves.length;
-			killAllSlaves()
-			spawnSlaves(cnt)
-		},slaveRestartInterval)
-	}
+		setInterval(spawnSlaves,slaveRestartInterval)
+
+	if(restartMaster)
+		setTimeout(function(){ location.reload() }, masterRestartInterval)
 	
 	var cont = $J('<div>').addClass('slaveManager');
 	cont.css({
