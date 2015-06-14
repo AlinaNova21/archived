@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name Monster Minigame Slave Script
 // @author /u/ags131
-// @version 1.07
+// @version 1.08
 // @namespace https://github.com/ags131/steamMinigameSlaveScript
 // @description A script that spawns slave instances of the Steam Monster Minigame
 // @match *://steamcommunity.com/minigame/towerattack*
@@ -76,9 +76,24 @@ function runMaster()
 	if(masterWindowPeriodicRestart)
 		setTimeout(function(){ location.reload() }, masterWindowPeriodicRestartInterval)
 	
-	var tgt = $J('.game_options .toggle_music_btn:first')
-	$J('<span>').addClass('toggle_music_btn').insertAfter(tgt).click(killAllSlaves).text('Kill Slaves')
-	$J('<span>').addClass('toggle_music_btn').insertAfter(tgt).click(spawnSlaves).text('Spawn Slaves')
+	var counterStyle = {
+		'position': 'relative',
+		'font-weight': 'bold',
+		'top': '25px',
+		'margin-left': '10px',
+		'color': '#FF8585'
+	};
+ 			 	
+	var spacerStyle = {
+		'margin-left': '100px'
+	};
+
+	var tgt = $J('.game_options .toggle_music_btn:first');
+	var spawnSlavesBtn = $J('<span>').addClass('toggle_music_btn').insertAfter(tgt).click(spawnSlaves).text('Spawn Slaves').css(spacerStyle);
+	var killSlavesBtn = $J('<span>').addClass('toggle_music_btn').insertAfter(spawnSlavesBtn).click(killAllSlaves).text('Kill Slaves');
+	$J('<span id="slaveCounter">Slaves: <span class="slaveWindowCount">0</span></span>').insertAfter(killSlavesBtn).css(counterStyle);
+
+ 	$J('#slaveCounter').css(counterStyle);
 }
 function runSlave()
 {
