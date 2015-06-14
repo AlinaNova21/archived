@@ -11,6 +11,7 @@
 // @downloadURL https://raw.githubusercontent.com/ags131/steamMinigameSlaveScript/master/slavescript.user.js
 // ==/UserScript==
 
+var autoStartSlaves = true; // Start slaves when master loads
 var slaveCount = 10; // Adjust this according to your computers capabilities, more slaves means more ram and CPU. 
 var cleanupSlave = true; // Hide all UI and disable rendering for slaves. This will help on CPU and possibly RAM usage
 var restartSlaves = true; // Periodically restarts slaves in attempts to free memory
@@ -34,8 +35,8 @@ function runMaster()
 		$J('.slaveCount').text(slaves.length)
 	}
 	
-	function spawnSlaves(cnt){
-		cnt = 10;//cnt || 10;
+	function spawnSlaves(){
+		cnt = slaveCount;
 		for(var i=0;i<cnt;i++)
 			spawnSlave()
 	}
@@ -45,6 +46,9 @@ function runMaster()
 			slaves.pop().close()
 		$J('.slaveCount').text(slaves.length)
 	}
+	
+	if(autoStartSlaves)
+		spawnSlaves()
 	
 	if(restartSlaves)
 	{
