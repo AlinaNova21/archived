@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name Monster Minigame Slave Script
 // @author /u/ags131
-// @version 1.02
+// @version 1.03
 // @namespace https://github.com/ags131/steamMinigameSlaveScript
 // @description A script that spawns slave instances of the Steam Monster Minigame
 // @match *://steamcommunity.com/minigame/towerattack*
