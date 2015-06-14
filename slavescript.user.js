@@ -112,6 +112,8 @@ function runSlave()
 				.text('Slave')
 				.appendTo(cont);
 				g_Minigame.Renderer.render = function(){} // Disable rendering. Completely.
+				bIsMuted = function() { return true; }; // disable SFX. Completely
+				g_AudioManager.m_eleMusic = null; // Disable music. Completely
 			}
 		},1000)
 	}
