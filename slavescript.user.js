@@ -1,7 +1,7 @@
 // ==UserScript== 
 // @name Monster Minigame Slave Script
 // @author /u/ags131
-// @version 1.05
+// @version 1.06
 // @namespace https://github.com/ags131/steamMinigameSlaveScript
 // @description A script that spawns slave instances of the Steam Monster Minigame
 // @match *://steamcommunity.com/minigame/towerattack*
@@ -13,14 +13,14 @@
 
 var autoStartSlaves = true; // Start slaves when master loads
 
-var slaveCount = 10; // Adjust this according to your computers capabilities, more slaves means more ram and CPU. 
+var slaveCount = 5; // Adjust this according to your computers capabilities, more slaves means more ram and CPU. 
 var cleanupSlave = true; // Hide all UI and disable rendering for slaves. This will help on CPU and possibly RAM usage
 
 var restartSlaves = true; // Periodically restarts slaves in attempts to free memory
 var slaveRestartInterval = 15 * 60 * 1000;  // Period to restart slaves (In milliseconds)
 
-var restartMaster = false; // Periodically restarts master in attempts to free memory
-var masterRestartInterval = 15 * 60 * 1000;  // Period to restart master (In milliseconds)
+var restartMaster = true; // Periodically restarts master in attempts to free memory
+var masterRestartInterval = 2 * 60 * 1000;  // Period to restart master (In milliseconds)
 
 var manualKilled = false;
 
@@ -40,7 +40,7 @@ function runMaster()
 		var slaveheight = screen.height / 10;
 		var params = 'left=0, top='+(num*100)+', width=220, height=100';
 		var slave = window.open("http://steamcommunity.com/minigame/towerattack/?slave",'slave'+num, params)
-		if(num < slaves.length)
+		if(num >= slaves.length)
 			slaves.push(slave);
 		$J('.slaveCount').text(slaves.length)
 	}
@@ -49,7 +49,7 @@ function runMaster()
 		manualKilled = false
 		cnt = slaveCount;
 		for(var i=0;i<cnt;i++)
-			spawnSlave(i)
+			setTimeout(spawnSlave.bind(window,i),i * 3000)
 	}
 	
 	function killAllSlaves(){
@@ -59,8 +59,14 @@ function runMaster()
 		$J('.slaveCount').text(slaves.length)
 	}
 	
-	if(autoStartSlaves)
-		spawnSlaves()
+	var startupCheckInter = setInterval(function(){
+		if(g_Minigame.m_CurrentScene.m_bRunning)
+		{
+			clearInterval(startupCheckInter);
+			if(autoStartSlaves)
+				spawnSlaves()		
+		}
+	},1000)
 	
 	if(restartSlaves)
 		setInterval(function(){ 
@@ -71,22 +77,9 @@ function runMaster()
 	if(restartMaster)
 		setTimeout(function(){ location.reload() }, masterRestartInterval)
 	
-	var cont = $J('<div>').addClass('slaveManager');
-	cont.css({
-		position: 'absolute',
-		'z-index': 12,
-		bottom: '20px',
-		left: '30px'
-	})
-	var btnStyle = {
-		border: 'none',
-		padding: '5px',
-		'border-radius': '10px'
-	}
-	$J('<button>').css(btnStyle).appendTo(cont).click(spawnSlaves).text('Spawn Slaves')
-	$J('<button>').css(btnStyle).appendTo(cont).click(killAllSlaves).text('Kill All Slaves')
-	cont.append('<span>Slaves: <span class="slaveCount"></span></span>')
-	cont.appendTo($J('#uicontainer'))
+	var tgt = $J('.game_options .toggle_music_btn:first')
+	$J('<span>').addClass('toggle_music_btn').insertAfter(tgt).click(killAllSlaves).text('Kill Slaves')
+	$J('<span>').addClass('toggle_music_btn').insertAfter(tgt).click(spawnSlaves).text('Spawn Slaves')
 }
 function runSlave()
 {
