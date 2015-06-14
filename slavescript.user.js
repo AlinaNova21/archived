@@ -22,6 +22,8 @@ var slaveRestartInterval = 15 * 60 * 1000;  // Period to restart slaves (In mill
 var restartMaster = false; // Periodically restarts master in attempts to free memory
 var masterRestartInterval = 15 * 60 * 1000;  // Period to restart master (In milliseconds)
 
+var manualKilled = false;
+
 if(restartMaster && autoStartSlaves) 
 	restartSlaves = false; // Disable restartSlaves if restartMaster && autoStartSlaves
 
@@ -35,22 +37,23 @@ function runMaster()
 	window.unload = function(){ killAllSlaves() }
 	var slaves = window.slaves = [];
 	function spawnSlave(num){
-		num = num || slaves.length
 		var slaveheight = screen.height / 10;
 		var params = 'left=0, top='+(num*100)+', width=220, height=100';
 		var slave = window.open("http://steamcommunity.com/minigame/towerattack/?slave",'slave'+num, params)
-		if(num == slaves.length)
+		if(num < slaves.length)
 			slaves.push(slave);
 		$J('.slaveCount').text(slaves.length)
 	}
 	
 	function spawnSlaves(){
+		manualKilled = false
 		cnt = slaveCount;
 		for(var i=0;i<cnt;i++)
 			spawnSlave(i)
 	}
 	
 	function killAllSlaves(){
+		manualKilled = true;
 		while(slaves.length)
 			slaves.pop().close()
 		$J('.slaveCount').text(slaves.length)
@@ -60,7 +63,10 @@ function runMaster()
 		spawnSlaves()
 	
 	if(restartSlaves)
-		setInterval(spawnSlaves,slaveRestartInterval)
+		setInterval(function(){ 
+			if(!manualKilled)
+				spawnSlaves()
+		},slaveRestartInterval)
 
 	if(restartMaster)
 		setTimeout(function(){ location.reload() }, masterRestartInterval)
