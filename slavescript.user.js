@@ -11,21 +11,21 @@
 // @downloadURL https://raw.githubusercontent.com/ags131/steamMinigameSlaveScript/master/slavescript.user.js
 // ==/UserScript==
 
-var autoStartSlaves = true; // Start slaves when master loads
+var slaveWindowAutoStart = true; // Start slaves when master loads
 
-var slaveCount = 5; // Adjust this according to your computers capabilities, more slaves means more ram and CPU. 
-var cleanupSlave = true; // Hide all UI and disable rendering for slaves. This will help on CPU and possibly RAM usage
+var slaveWindowCount = 5; // Adjust this according to your computers capabilities, more slaves means more ram and CPU. 
+var slaveWindowUICleanup = true; // Hide all UI and disable rendering for slaves. This will help on CPU and possibly RAM usage
 
-var restartSlaves = true; // Periodically restarts slaves in attempts to free memory
-var slaveRestartInterval = 15 * 60 * 1000;  // Period to restart slaves (In milliseconds)
+var slaveWindowPeriodicRestart = true; // Periodically restarts slaves in attempts to free memory
+var slaveWindowPeriodicRestartInterval = 15 * 60 * 1000;  // Period to restart slaves (In milliseconds)
 
-var restartMaster = true; // Periodically restarts master in attempts to free memory
-var masterRestartInterval = 2 * 60 * 1000;  // Period to restart master (In milliseconds)
+var masterWindowPeriodicRestart = true; // Periodically restarts master in attempts to free memory
+var masterWindowPeriodicRestartInterval = 2 * 60 * 1000;  // Period to restart master (In milliseconds)
 
-var manualKilled = false;
+var slaveWindowManuallyKilled = false; // Flag for kill slaves is ran to prevent periodic restart;
 
-if(restartMaster && autoStartSlaves) 
-	restartSlaves = false; // Disable restartSlaves if restartMaster && autoStartSlaves
+if(masterWindowPeriodicRestart && slaveWindowAutoStart) 
+	slaveWindowPeriodicRestart = false; // Disable slaveWindowPeriodicRestart if masterWindowPeriodicRestart && slaveWindowAutoStart
 
 if(location.search.match(/slave/))
 	runSlave()
@@ -35,47 +35,46 @@ else
 function runMaster()
 {
 	window.unload = function(){ killAllSlaves() }
-	var slaves = window.slaves = [];
+
+	var slavesList = window.slavesList = [];
+	
 	function spawnSlave(num){
-		var slaveheight = screen.height / 10;
 		var params = 'left=0, top='+(num*100)+', width=220, height=100';
 		var slave = window.open("http://steamcommunity.com/minigame/towerattack/?slave",'slave'+num, params)
-		if(num >= slaves.length)
-			slaves.push(slave);
-		$J('.slaveCount').text(slaves.length)
+		if(num >= slavesList.length)
+			slavesList.push(slave);
+		$J('.slaveWindowCount').text(slavesList.length)
 	}
 	
 	function spawnSlaves(){
-		manualKilled = false
-		cnt = slaveCount;
+		slaveWindowManuallyKilled = false
+		cnt = slaveWindowCount;
 		for(var i=0;i<cnt;i++)
 			setTimeout(spawnSlave.bind(window,i),i * 3000)
 	}
 	
 	function killAllSlaves(){
-		manualKilled = true;
-		while(slaves.length)
-			slaves.pop().close()
-		$J('.slaveCount').text(slaves.length)
+		slaveWindowManuallyKilled = true;
+		while(slavesList.length) {
+			var toKill = slavesList.pop();
+			
+			if(toKill)
+				toKill.close();
+		}
+		$J('.slaveWindowCount').text(slavesList.length)
 	}
 	
 	var startupCheckInter = setInterval(function(){
 		if(g_Minigame.m_CurrentScene.m_bRunning)
 		{
 			clearInterval(startupCheckInter);
-			if(autoStartSlaves)
+			if(slaveWindowAutoStart)
 				spawnSlaves()		
 		}
 	},1000)
-	
-	if(restartSlaves)
-		setInterval(function(){ 
-			if(!manualKilled)
-				spawnSlaves()
-		},slaveRestartInterval)
 
-	if(restartMaster)
-		setTimeout(function(){ location.reload() }, masterRestartInterval)
+	if(masterWindowPeriodicRestart)
+		setTimeout(function(){ location.reload() }, masterWindowPeriodicRestartInterval)
 	
 	var tgt = $J('.game_options .toggle_music_btn:first')
 	$J('<span>').addClass('toggle_music_btn').insertAfter(tgt).click(killAllSlaves).text('Kill Slaves')
@@ -83,7 +82,7 @@ function runMaster()
 }
 function runSlave()
 {
-	if(cleanupSlave){
+	if(slaveWindowUICleanup){
 		var cleanupPageInter = setInterval(function(){
 			if(window.CUI || g_Minigame.m_CurrentScene.m_bRunning)
 			{
@@ -100,5 +99,16 @@ function runSlave()
 				g_Minigame.Renderer.render = function(){} // Disable rendering. Completely.
 			}
 		},1000)
+	}
+
+	if(slaveWindowPeriodicRestart) {
+		var resetInterval = setInterval(function () {
+			// Only refresh if we're not on a boss / Treasure mob
+			var target = getTarget();
+			if(target && target.m_data.type != 2 && target.m_data.type != 4 ){
+				clearInterval(resetInterval); // Shouldn't need this but meh.
+				window.location.href = "./?slave";
+			}
+		}, slaveWindowPeriodicRestartInterval);
 	}
 }
