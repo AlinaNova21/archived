@@ -1,0 +1,7 @@
+# vim stuff
+*~
+Session.vim
+main
+mifare-ultralight-read-lego
+*.o
+*.swp
